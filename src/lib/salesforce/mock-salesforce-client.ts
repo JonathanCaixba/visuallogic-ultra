@@ -3,6 +3,8 @@ import { dashboardById, dashboardByTemplate, latestDashboardId } from "@/data/mo
 import { getAccountsTableWidget } from "@/services/salesforce/dashboard-builder";
 import { getRealKpis } from "@/services/salesforce/kpi-builder";
 import { getOpportunityChartData } from "@/services/salesforce/kpi-builder";
+import { getRecentCases } from "@/services/salesforce/kpi-builder";
+import { getBusinessSummary } from "@/services/salesforce/kpi-builder";
 import { mockAgentEvents } from "@/data/mock-events";
 import type {
   AgentEvent,
@@ -37,6 +39,8 @@ class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
 
   const kpis = await getRealKpis();
   const chartData = await getOpportunityChartData();
+  const cases = await getRecentCases();
+  const summary = await getBusinessSummary();
 
   const tableIndex = dashboard.widgets.findIndex(
     (widget) => widget.id === "table-primary"
@@ -46,6 +50,104 @@ class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
     dashboard.widgets[tableIndex] =
       await getAccountsTableWidget();
   }
+
+  dashboard.widgets.forEach((widget) => {
+  if (widget.id === "kpi-1" && widget.type === "kpi") {
+    widget.data.value = kpis.accounts;
+    widget.title = "Accounts";
+  }
+
+  if (widget.id === "kpi-2" && widget.type === "kpi") {
+    widget.data.value = kpis.opportunities;
+    widget.title = "Opportunities";
+  }
+
+  if (widget.id === "kpi-3" && widget.type === "kpi") {
+    widget.data.value = kpis.cases;
+    widget.title = "Cases";
+  }
+  
+  if (widget.id === "table-primary") {
+  widget.title = "Recent Cases";
+
+  widget.data = {
+    columns: [
+      {
+        key: "caseNumber",
+        label: "Case"
+      },
+      {
+        key: "subject",
+        label: "Subject"
+      },
+      {
+        key: "status",
+        label: "Status"
+      }
+    ],
+
+    rows: cases.map(
+      (item: {
+        CaseNumber: string;
+        Subject: string;
+        Status: string;
+      }) => ({
+        caseNumber: item.CaseNumber,
+        subject: item.Subject,
+        status: item.Status
+      })
+    )
+  };
+}
+
+  if (widget.id === "chart-primary") {
+  widget.title = "Salesforce Opportunities";
+
+  widget.data = {
+    xKey: "label",
+    series: [
+      {
+        key: "value",
+        label: "Opportunities",
+        color: "#0f9f6e"
+      }
+    ],
+    data: chartData
+  };
+}
+
+if (widget.id === "insight-primary") {
+  widget.title = "Salesforce Intelligence";
+
+  widget.data = {
+    agent: "VisualLogic AI",
+    severity: "info",
+    summary: `Organization currently contains ${summary.accounts} Accounts, ${summary.opportunities} Opportunities and ${summary.cases} Cases.`,
+    bullets: [
+      `${summary.accounts} active Accounts detected`,
+      `${summary.opportunities} active Opportunities detected`,
+      `${summary.cases} Cases currently available`
+    ]
+  };
+}
+});
+
+
+  return dashboard;
+}
+
+  async getDashboardById(
+  id: string
+): Promise<DashboardConfiguration> {
+
+  const dashboard = cloneDashboard(
+    requireDashboard(id)
+  );
+
+  const kpis = await getRealKpis();
+  const chartData = await getOpportunityChartData();
+  const cases = await getRecentCases();
+  const summary = await getBusinessSummary();
 
   dashboard.widgets.forEach((widget) => {
   if (widget.id === "kpi-1" && widget.type === "kpi") {
@@ -78,52 +180,52 @@ class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
     data: chartData
   };
 }
-});
 
-
-  return dashboard;
-}
-
-  async getDashboardById(
-  id: string
-): Promise<DashboardConfiguration> {
-
-  const dashboard = cloneDashboard(
-    requireDashboard(id)
-  );
-
-  const kpis = await getRealKpis();
-  const chartData = await getOpportunityChartData();
-
-  dashboard.widgets.forEach((widget) => {
-  if (widget.id === "kpi-1" && widget.type === "kpi") {
-    widget.data.value = kpis.accounts;
-    widget.title = "Accounts";
-  }
-
-  if (widget.id === "kpi-2" && widget.type === "kpi") {
-    widget.data.value = kpis.opportunities;
-    widget.title = "Opportunities";
-  }
-
-  if (widget.id === "kpi-3" && widget.type === "kpi") {
-    widget.data.value = kpis.cases;
-    widget.title = "Cases";
-  }
-
-  if (widget.id === "chart-primary") {
-  widget.title = "Salesforce Opportunities";
+if (widget.id === "table-primary") {
+  widget.title = "Recent Cases";
 
   widget.data = {
-    xKey: "label",
-    series: [
+    columns: [
       {
-        key: "value",
-        label: "Opportunities",
-        color: "#0f9f6e"
+        key: "caseNumber",
+        label: "Case"
+      },
+      {
+        key: "subject",
+        label: "Subject"
+      },
+      {
+        key: "status",
+        label: "Status"
       }
     ],
-    data: chartData
+
+    rows: cases.map(
+      (item: {
+        CaseNumber: string;
+        Subject: string;
+        Status: string;
+      }) => ({
+        caseNumber: item.CaseNumber,
+        subject: item.Subject,
+        status: item.Status
+      })
+    )
+  };
+}
+
+if (widget.id === "insight-primary") {
+  widget.title = "Salesforce Intelligence";
+
+  widget.data = {
+    agent: "VisualLogic AI",
+    severity: "info",
+    summary: `Organization currently contains ${summary.accounts} Accounts, ${summary.opportunities} Opportunities and ${summary.cases} Cases.`,
+    bullets: [
+      `${summary.accounts} active Accounts detected`,
+      `${summary.opportunities} active Opportunities detected`,
+      `${summary.cases} Cases currently available`
+    ]
   };
 }
 });

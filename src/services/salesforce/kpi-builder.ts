@@ -37,3 +37,37 @@ export async function getOpportunityChartData() {
     })
   );
 }
+
+export async function getRecentCases() {
+  const result = await querySalesforce(`
+    SELECT CaseNumber, Subject, Status
+    FROM Case
+    ORDER BY CreatedDate DESC
+    LIMIT 10
+  `);
+
+  return result.records;
+}
+
+export async function getBusinessSummary() {
+  const accounts = await querySalesforce(`
+    SELECT COUNT()
+    FROM Account
+  `);
+
+  const opportunities = await querySalesforce(`
+    SELECT COUNT()
+    FROM Opportunity
+  `);
+
+  const cases = await querySalesforce(`
+    SELECT COUNT()
+    FROM Case
+  `);
+
+  return {
+    accounts: accounts.totalSize,
+    opportunities: opportunities.totalSize,
+    cases: cases.totalSize
+  };
+}
