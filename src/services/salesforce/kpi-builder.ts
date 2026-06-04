@@ -22,3 +22,18 @@ export async function getRealKpis() {
     cases: casesResult.totalSize
   };
 }
+
+export async function getOpportunityChartData() {
+  const result = await querySalesforce(`
+    SELECT Name
+    FROM Opportunity
+    LIMIT 10
+  `);
+
+  return result.records.map(
+    (record: { Name: string }, index: number) => ({
+      label: `Opp ${index + 1}`,
+      value: index + 1
+    })
+  );
+}

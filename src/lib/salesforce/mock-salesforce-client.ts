@@ -2,6 +2,7 @@ import { buildAgentTasks, inferTemplateFromPrompt } from "@/data/mock-agent";
 import { dashboardById, dashboardByTemplate, latestDashboardId } from "@/data/mock-dashboards";
 import { getAccountsTableWidget } from "@/services/salesforce/dashboard-builder";
 import { getRealKpis } from "@/services/salesforce/kpi-builder";
+import { getOpportunityChartData } from "@/services/salesforce/kpi-builder";
 import { mockAgentEvents } from "@/data/mock-events";
 import type {
   AgentEvent,
@@ -35,6 +36,7 @@ class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
   );
 
   const kpis = await getRealKpis();
+  const chartData = await getOpportunityChartData();
 
   const tableIndex = dashboard.widgets.findIndex(
     (widget) => widget.id === "table-primary"
@@ -60,7 +62,24 @@ class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
     widget.data.value = kpis.cases;
     widget.title = "Cases";
   }
+
+  if (widget.id === "chart-primary") {
+  widget.title = "Salesforce Opportunities";
+
+  widget.data = {
+    xKey: "label",
+    series: [
+      {
+        key: "value",
+        label: "Opportunities",
+        color: "#0f9f6e"
+      }
+    ],
+    data: chartData
+  };
+}
 });
+
 
   return dashboard;
 }
@@ -74,6 +93,7 @@ class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
   );
 
   const kpis = await getRealKpis();
+  const chartData = await getOpportunityChartData();
 
   dashboard.widgets.forEach((widget) => {
   if (widget.id === "kpi-1" && widget.type === "kpi") {
@@ -90,6 +110,22 @@ class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
     widget.data.value = kpis.cases;
     widget.title = "Cases";
   }
+
+  if (widget.id === "chart-primary") {
+  widget.title = "Salesforce Opportunities";
+
+  widget.data = {
+    xKey: "label",
+    series: [
+      {
+        key: "value",
+        label: "Opportunities",
+        color: "#0f9f6e"
+      }
+    ],
+    data: chartData
+  };
+}
 });
 
   const tableIndex = dashboard.widgets.findIndex(
