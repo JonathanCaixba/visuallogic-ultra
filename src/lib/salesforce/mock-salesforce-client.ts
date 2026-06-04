@@ -1,6 +1,7 @@
 import { buildAgentTasks, inferTemplateFromPrompt } from "@/data/mock-agent";
 import { dashboardById, dashboardByTemplate, latestDashboardId } from "@/data/mock-dashboards";
 import { getAccountsTableWidget } from "@/services/salesforce/dashboard-builder";
+import { getRealKpis } from "@/services/salesforce/kpi-builder";
 import { mockAgentEvents } from "@/data/mock-events";
 import type {
   AgentEvent,
@@ -33,6 +34,8 @@ class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
     requireDashboard(latestDashboardId)
   );
 
+  const kpis = await getRealKpis();
+
   const tableIndex = dashboard.widgets.findIndex(
     (widget) => widget.id === "table-primary"
   );
@@ -41,6 +44,23 @@ class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
     dashboard.widgets[tableIndex] =
       await getAccountsTableWidget();
   }
+
+  dashboard.widgets.forEach((widget) => {
+  if (widget.id === "kpi-1" && widget.type === "kpi") {
+    widget.data.value = kpis.accounts;
+    widget.title = "Accounts";
+  }
+
+  if (widget.id === "kpi-2" && widget.type === "kpi") {
+    widget.data.value = kpis.opportunities;
+    widget.title = "Opportunities";
+  }
+
+  if (widget.id === "kpi-3" && widget.type === "kpi") {
+    widget.data.value = kpis.cases;
+    widget.title = "Cases";
+  }
+});
 
   return dashboard;
 }
@@ -53,6 +73,25 @@ class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
     requireDashboard(id)
   );
 
+  const kpis = await getRealKpis();
+
+  dashboard.widgets.forEach((widget) => {
+  if (widget.id === "kpi-1" && widget.type === "kpi") {
+    widget.data.value = kpis.accounts;
+    widget.title = "Accounts";
+  }
+
+  if (widget.id === "kpi-2" && widget.type === "kpi") {
+    widget.data.value = kpis.opportunities;
+    widget.title = "Opportunities";
+  }
+
+  if (widget.id === "kpi-3" && widget.type === "kpi") {
+    widget.data.value = kpis.cases;
+    widget.title = "Cases";
+  }
+});
+
   const tableIndex = dashboard.widgets.findIndex(
     (widget) => widget.id === "table-primary"
   );
@@ -61,6 +100,7 @@ class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
     dashboard.widgets[tableIndex] =
       await getAccountsTableWidget();
   }
+  
 
   return dashboard;
 }
