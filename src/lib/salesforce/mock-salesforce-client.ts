@@ -1,5 +1,6 @@
 import { buildAgentTasks, inferTemplateFromPrompt } from "@/data/mock-agent";
 import { dashboardById, dashboardByTemplate, latestDashboardId } from "@/data/mock-dashboards";
+import { getAccountsTableWidget } from "@/services/salesforce/dashboard-builder";
 import { mockAgentEvents } from "@/data/mock-events";
 import type {
   AgentEvent,
@@ -28,12 +29,41 @@ function requireDashboard(id: string): DashboardConfiguration {
 
 class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
   async getLatestDashboard(): Promise<DashboardConfiguration> {
-    return cloneDashboard(requireDashboard(latestDashboardId));
+  const dashboard = cloneDashboard(
+    requireDashboard(latestDashboardId)
+  );
+
+  const tableIndex = dashboard.widgets.findIndex(
+    (widget) => widget.id === "table-primary"
+  );
+
+  if (tableIndex >= 0) {
+    dashboard.widgets[tableIndex] =
+      await getAccountsTableWidget();
   }
 
-  async getDashboardById(id: string): Promise<DashboardConfiguration> {
-    return cloneDashboard(requireDashboard(id));
+  return dashboard;
+}
+
+  async getDashboardById(
+  id: string
+): Promise<DashboardConfiguration> {
+
+  const dashboard = cloneDashboard(
+    requireDashboard(id)
+  );
+
+  const tableIndex = dashboard.widgets.findIndex(
+    (widget) => widget.id === "table-primary"
+  );
+
+  if (tableIndex >= 0) {
+    dashboard.widgets[tableIndex] =
+      await getAccountsTableWidget();
   }
+
+  return dashboard;
+}
 
   async getEvents(): Promise<AgentEvent[]> {
     return structuredClone(mockAgentEvents);
