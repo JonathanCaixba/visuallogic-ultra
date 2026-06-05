@@ -5,3 +5,4 @@ export * from "./events";
 export * from "./layout";
 export * from "./theme";
 export * from "./widget";
+export * from "./dashboard-request";
