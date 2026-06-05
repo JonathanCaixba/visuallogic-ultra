@@ -1,13 +1,8 @@
 import { buildAgentTasks, inferTemplateFromPrompt } from "@/data/mock-agent";
 import { dashboardById, dashboardByTemplate, latestDashboardId } from "@/data/mock-dashboards";
-import {
-  getAccountsTableWidget,
-  getOpportunitiesTableWidget,
-  getCasesTableWidget
-} from "@/services/salesforce/dashboard-builder";
+import { getAccountsTableWidget, getOpportunitiesTableWidget, getCasesTableWidget } from "@/services/salesforce/dashboard-builder";
 import { getRealKpis } from "@/services/salesforce/kpi-builder";
 import { getOpportunityChartData } from "@/services/salesforce/kpi-builder";
-import { getRecentCases } from "@/services/salesforce/kpi-builder";
 import { getBusinessSummary } from "@/services/salesforce/kpi-builder";
 import { mockAgentEvents } from "@/data/mock-events";
 import type {
@@ -43,7 +38,6 @@ class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
 
   const kpis = await getRealKpis();
   const chartData = await getOpportunityChartData();
-  const cases = await getRecentCases();
   const summary = await getBusinessSummary();
 
   const accountsIndex = dashboard.widgets.findIndex(
@@ -135,7 +129,6 @@ if (widget.id === "insight-primary") {
 
   const kpis = await getRealKpis();
   const chartData = await getOpportunityChartData();
-  const cases = await getRecentCases();
   const summary = await getBusinessSummary();
 
   const accountsIndex = dashboard.widgets.findIndex(

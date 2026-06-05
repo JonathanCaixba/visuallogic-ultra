@@ -70,5 +70,16 @@ export function getDashboardName(prompt: string): string {
     return "Support Operations Dashboard";
   }
 
+  if (
+    text.includes("combined") ||
+    text.includes("combinado") ||
+    text.includes("combina") ||
+    text.includes("mismo") ||
+    text.includes("misme") ||
+    text.includes("ventas")
+  ) {
+    return "Combined Dashboard";
+  }
+
   return "Custom Dashboard";
 }
