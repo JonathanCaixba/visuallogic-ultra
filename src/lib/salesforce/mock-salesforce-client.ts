@@ -4,6 +4,7 @@ import { getAccountsTableWidget, getOpportunitiesTableWidget, getCasesTableWidge
 import { getRealKpis } from "@/services/salesforce/kpi-builder";
 import { getOpportunityChartData } from "@/services/salesforce/kpi-builder";
 import { getBusinessSummary } from "@/services/salesforce/kpi-builder";
+import { getCasesByStatusChartData } from "@/services/salesforce/kpi-builder";
 import { mockAgentEvents } from "@/data/mock-events";
 import type {
   AgentEvent,
@@ -39,6 +40,8 @@ class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
   const kpis = await getRealKpis();
   const chartData = await getOpportunityChartData();
   const summary = await getBusinessSummary();
+  const casesChartData = await getCasesByStatusChartData();
+  const template = dashboard.template;
 
   const accountsIndex = dashboard.widgets.findIndex(
   (widget) => widget.id === "table-primary"
@@ -99,6 +102,21 @@ if (casesIndex >= 0) {
   };
 }
 
+if (widget.id === "chart-secondary") {
+  widget.title = "Cases by Status";
+
+  widget.data = {
+    xKey: "label",
+    series: [
+      {
+        key: "value",
+        label: "Cases"
+      }
+    ],
+    data: casesChartData
+  };
+}
+
 if (widget.id === "insight-primary") {
   widget.title = "Salesforce Intelligence";
 
@@ -115,6 +133,28 @@ if (widget.id === "insight-primary") {
 }
 });
 
+if (template === "support_operations") {
+  dashboard.widgets.forEach((widget) => {
+
+    if (widget.id === "kpi-1" && widget.type === "kpi") {
+      widget.title = "Open Cases";
+      widget.data.value = kpis.cases;
+    }
+
+    if (widget.id === "kpi-2" && widget.type === "kpi") {
+      widget.title = "Critical Cases";
+    }
+
+    if (widget.id === "kpi-3" && widget.type === "kpi") {
+      widget.title = "SLA Risk";
+    }
+
+    if (widget.id === "kpi-4" && widget.type === "kpi") {
+      widget.title = "Median Response";
+    }
+
+  });
+}
 
   return dashboard;
 }
@@ -130,6 +170,8 @@ if (widget.id === "insight-primary") {
   const kpis = await getRealKpis();
   const chartData = await getOpportunityChartData();
   const summary = await getBusinessSummary();
+  const casesChartData = await getCasesByStatusChartData();
+  const template = dashboard.template;
 
   const accountsIndex = dashboard.widgets.findIndex(
   (widget) => widget.id === "table-primary"
@@ -190,6 +232,21 @@ if (casesIndex >= 0) {
   };
 }
 
+if (widget.id === "chart-secondary") {
+  widget.title = "Cases by Status";
+
+  widget.data = {
+    xKey: "label",
+    series: [
+      {
+        key: "value",
+        label: "Cases"
+      }
+    ],
+    data: casesChartData
+  };
+}
+
 if (widget.id === "insight-primary") {
   widget.title = "Salesforce Intelligence";
 
@@ -205,6 +262,29 @@ if (widget.id === "insight-primary") {
   };
 }
 });
+
+if (template === "support_operations") {
+  dashboard.widgets.forEach((widget) => {
+
+    if (widget.id === "kpi-1" && widget.type === "kpi") {
+      widget.title = "Open Cases";
+      widget.data.value = kpis.cases;
+    }
+
+    if (widget.id === "kpi-2" && widget.type === "kpi") {
+      widget.title = "Critical Cases";
+    }
+
+    if (widget.id === "kpi-3" && widget.type === "kpi") {
+      widget.title = "SLA Risk";
+    }
+
+    if (widget.id === "kpi-4" && widget.type === "kpi") {
+      widget.title = "Median Response";
+    }
+
+  });
+}
   
   return dashboard;
 }

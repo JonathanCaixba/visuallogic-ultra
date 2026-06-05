@@ -25,15 +25,38 @@ export async function getRealKpis() {
 
 export async function getOpportunityChartData() {
   const result = await querySalesforce(`
-    SELECT Name
+    SELECT StageName, COUNT(Id)
+    total
     FROM Opportunity
-    LIMIT 10
+    GROUP BY StageName
   `);
 
   return result.records.map(
-    (record: { Name: string }, index: number) => ({
-      label: `Opp ${index + 1}`,
-      value: index + 1
+    (record: {
+      StageName: string;
+      total: number;
+    }) => ({
+      label: record.StageName || "Unknown",
+      value: record.total
+    })
+  );
+}
+
+export async function getCasesByStatusChartData() {
+  const result = await querySalesforce(`
+    SELECT Status, COUNT(Id)
+    total
+    FROM Case
+    GROUP BY Status
+  `);
+
+  return result.records.map(
+    (record: {
+      Status: string;
+      total: number;
+    }) => ({
+      label: record.Status || "Unknown",
+      value: record.total
     })
   );
 }
