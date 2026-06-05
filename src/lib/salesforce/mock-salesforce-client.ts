@@ -1,6 +1,10 @@
 import { buildAgentTasks, inferTemplateFromPrompt } from "@/data/mock-agent";
 import { dashboardById, dashboardByTemplate, latestDashboardId } from "@/data/mock-dashboards";
-import { getAccountsTableWidget } from "@/services/salesforce/dashboard-builder";
+import {
+  getAccountsTableWidget,
+  getOpportunitiesTableWidget,
+  getCasesTableWidget
+} from "@/services/salesforce/dashboard-builder";
 import { getRealKpis } from "@/services/salesforce/kpi-builder";
 import { getOpportunityChartData } from "@/services/salesforce/kpi-builder";
 import { getRecentCases } from "@/services/salesforce/kpi-builder";
@@ -42,14 +46,32 @@ class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
   const cases = await getRecentCases();
   const summary = await getBusinessSummary();
 
-  const tableIndex = dashboard.widgets.findIndex(
-    (widget) => widget.id === "table-primary"
-  );
+  const accountsIndex = dashboard.widgets.findIndex(
+  (widget) => widget.id === "table-primary"
+);
 
-  if (tableIndex >= 0) {
-    dashboard.widgets[tableIndex] =
-      await getAccountsTableWidget();
-  }
+if (accountsIndex >= 0) {
+  dashboard.widgets[accountsIndex] =
+    await getAccountsTableWidget();
+}
+
+const opportunitiesIndex = dashboard.widgets.findIndex(
+  (widget) => widget.id === "table-secondary"
+);
+
+if (opportunitiesIndex >= 0) {
+  dashboard.widgets[opportunitiesIndex] =
+    await getOpportunitiesTableWidget();
+}
+
+const casesIndex = dashboard.widgets.findIndex(
+  (widget) => widget.id === "table-tertiary"
+);
+
+if (casesIndex >= 0) {
+  dashboard.widgets[casesIndex] =
+    await getCasesTableWidget();
+}
 
   dashboard.widgets.forEach((widget) => {
   if (widget.id === "kpi-1" && widget.type === "kpi") {
@@ -66,39 +88,6 @@ class MockSalesforceAgentforceClient implements SalesforceAgentforceAdapter {
     widget.data.value = kpis.cases;
     widget.title = "Cases";
   }
-  
-  if (widget.id === "table-primary") {
-  widget.title = "Recent Cases";
-
-  widget.data = {
-    columns: [
-      {
-        key: "caseNumber",
-        label: "Case"
-      },
-      {
-        key: "subject",
-        label: "Subject"
-      },
-      {
-        key: "status",
-        label: "Status"
-      }
-    ],
-
-    rows: cases.map(
-      (item: {
-        CaseNumber: string;
-        Subject: string;
-        Status: string;
-      }) => ({
-        caseNumber: item.CaseNumber,
-        subject: item.Subject,
-        status: item.Status
-      })
-    )
-  };
-}
 
   if (widget.id === "chart-primary") {
   widget.title = "Salesforce Opportunities";
@@ -149,6 +138,33 @@ if (widget.id === "insight-primary") {
   const cases = await getRecentCases();
   const summary = await getBusinessSummary();
 
+  const accountsIndex = dashboard.widgets.findIndex(
+  (widget) => widget.id === "table-primary"
+);
+
+if (accountsIndex >= 0) {
+  dashboard.widgets[accountsIndex] =
+    await getAccountsTableWidget();
+}
+
+const opportunitiesIndex = dashboard.widgets.findIndex(
+  (widget) => widget.id === "table-secondary"
+);
+
+if (opportunitiesIndex >= 0) {
+  dashboard.widgets[opportunitiesIndex] =
+    await getOpportunitiesTableWidget();
+}
+
+const casesIndex = dashboard.widgets.findIndex(
+  (widget) => widget.id === "table-tertiary"
+);
+
+if (casesIndex >= 0) {
+  dashboard.widgets[casesIndex] =
+    await getCasesTableWidget();
+}
+
   dashboard.widgets.forEach((widget) => {
   if (widget.id === "kpi-1" && widget.type === "kpi") {
     widget.data.value = kpis.accounts;
@@ -181,39 +197,6 @@ if (widget.id === "insight-primary") {
   };
 }
 
-if (widget.id === "table-primary") {
-  widget.title = "Recent Cases";
-
-  widget.data = {
-    columns: [
-      {
-        key: "caseNumber",
-        label: "Case"
-      },
-      {
-        key: "subject",
-        label: "Subject"
-      },
-      {
-        key: "status",
-        label: "Status"
-      }
-    ],
-
-    rows: cases.map(
-      (item: {
-        CaseNumber: string;
-        Subject: string;
-        Status: string;
-      }) => ({
-        caseNumber: item.CaseNumber,
-        subject: item.Subject,
-        status: item.Status
-      })
-    )
-  };
-}
-
 if (widget.id === "insight-primary") {
   widget.title = "Salesforce Intelligence";
 
@@ -229,17 +212,7 @@ if (widget.id === "insight-primary") {
   };
 }
 });
-
-  const tableIndex = dashboard.widgets.findIndex(
-    (widget) => widget.id === "table-primary"
-  );
-
-  if (tableIndex >= 0) {
-    dashboard.widgets[tableIndex] =
-      await getAccountsTableWidget();
-  }
   
-
   return dashboard;
 }
 
