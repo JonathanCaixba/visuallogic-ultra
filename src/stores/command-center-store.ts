@@ -14,6 +14,7 @@ interface CommandCenterState {
   updateTaskStatus: (taskId: string, status: AgentStatus) => void;
   completeGeneration: (dashboardId: string) => void;
   reset: () => void;
+  
 }
 
 export const useCommandCenterStore = create<CommandCenterState>((set) => ({

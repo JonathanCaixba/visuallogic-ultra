@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ArrowRight, Bot, Sparkles } from "lucide-react";
+import { ArrowRight, Bot, Plus, Sparkles } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,9 @@ import { Input } from "@/components/ui/input";
 import { AgentThinkingTimeline } from "@/features/command-center/components/agent-thinking-timeline";
 import { AgentService } from "@/services/agent.service";
 import { useCommandCenterStore } from "@/stores/command-center-store";
+import { useHistoryStore } from "@/stores/history-store";
+import { HistorySidebar } from "@/components/history/history-sidebar";
+import { getDashboardName } from "@/services/dashboard-name.service";
 
 const promptExamples = [
   "Show closed opportunities this quarter",
@@ -26,6 +29,8 @@ export function CommandCenterShell() {
   const startGeneration = useCommandCenterStore((state) => state.startGeneration);
   const updateTaskStatus = useCommandCenterStore((state) => state.updateTaskStatus);
   const completeGeneration = useCommandCenterStore((state) => state.completeGeneration);
+  const reset = useCommandCenterStore((state) => state.reset);
+  const addHistoryItem = useHistoryStore((state) => state.addItem);
   const [error, setError] = useState<string | undefined>();
   const timers = useRef<number[]>([]);
 
@@ -49,33 +54,44 @@ export function CommandCenterShell() {
     timers.current = [];
 
     try {
-  const response = await AgentService.generateDashboard(requestPrompt);
+      const response = await AgentService.generateDashboard(requestPrompt);
 
-  startGeneration(response.tasks);
+      startGeneration(response.tasks);
 
-  response.tasks.forEach((task, index) => {
-    const runningTimer = window.setTimeout(
-      () => updateTaskStatus(task.id, "running"),
-      index * 850
-    );
+      response.tasks.forEach((task, index) => {
+        const runningTimer = window.setTimeout(
+          () => updateTaskStatus(task.id, "running"),
+          index * 850
+        );
 
-    const completedTimer = window.setTimeout(
-      () => updateTaskStatus(task.id, "completed"),
-      index * 850 + 620
-    );
+        const completedTimer = window.setTimeout(
+          () => updateTaskStatus(task.id, "completed"),
+          index * 850 + 620
+        );
 
-    timers.current.push(runningTimer);
-    timers.current.push(completedTimer);
-  });
+        timers.current.push(runningTimer);
+        timers.current.push(completedTimer);
+      });
 
-  window.setTimeout(() => {
-    completeGeneration(response.dashboardId);
-    router.push(`/dashboard/${response.dashboardId}`);
-  }, response.tasks.length * 850 + 1000);
+      window.setTimeout(() => {
 
-} catch {
-  setError("Command request could not be prepared.");
-}
+        addHistoryItem({
+          id: crypto.randomUUID(),
+          title: getDashboardName(requestPrompt),
+          prompt: requestPrompt,
+          dashboardId: response.dashboardId,
+          createdAt: new Date().toISOString()
+        });
+
+        completeGeneration(response.dashboardId);
+
+        router.push(`/dashboard/${response.dashboardId}`);
+
+      }, response.tasks.length * 850 + 1000);
+
+    } catch {
+      setError("Command request could not be prepared.");
+    }
   };
 
   return (
@@ -84,10 +100,23 @@ export function CommandCenterShell() {
         <div className="dashboard-surface min-h-[420px] p-5 md:p-6">
           <div className="mb-8 flex flex-wrap items-center gap-2">
             <Badge variant="secondary" className="gap-1.5">
-              <Bot className="h-3.5 w-3.5" aria-hidden="true" />
+              <Bot className="h-3.5 w-3.5" />
               Salesforce Agentforce
             </Badge>
-            <Badge variant="outline">Public Demo</Badge>
+
+            <Badge variant="outline">
+              Public Demo
+            </Badge>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => reset()}
+              className="ml-auto"
+            >
+              <Plus className="mr-1 h-4 w-4" />
+              New Conversation
+            </Button>
           </div>
 
           <div className="max-w-3xl">
@@ -131,7 +160,11 @@ export function CommandCenterShell() {
           </div>
         </div>
 
-        <AgentThinkingTimeline tasks={tasks} />
+        <div className="space-y-5">
+          <AgentThinkingTimeline tasks={tasks} />
+
+          <HistorySidebar />
+        </div>
       </div>
     </section>
   );

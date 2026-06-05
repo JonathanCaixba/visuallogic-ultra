@@ -36,23 +36,59 @@ export function buildAgentTasks(status: AgentTask["status"] = "pending"): AgentT
   ];
 }
 
-export function inferTemplateFromPrompt(prompt: string): DashboardTemplateId {
+export function inferTemplateFromPrompt(
+  prompt: string
+): DashboardTemplateId {
+
   const normalized = prompt.toLowerCase();
 
-  if (normalized.includes("support") || normalized.includes("case") || normalized.includes("sla")) {
+  // Support
+
+  if (
+    normalized.includes("support") ||
+    normalized.includes("case") ||
+    normalized.includes("cases") ||
+    normalized.includes("sla") ||
+    normalized.includes("ticket")
+  ) {
     return "support_operations";
   }
+
+  // Executive
 
   if (
     normalized.includes("executive") ||
     normalized.includes("business health") ||
-    normalized.includes("combined")
+    normalized.includes("combined") ||
+    normalized.includes("overview") ||
+    normalized.includes("summary")
   ) {
     return "executive_combined";
   }
 
-  if (normalized.includes("alert") || normalized.includes("insight")) {
+  // Intelligence
+
+  if (
+    normalized.includes("insight") ||
+    normalized.includes("alert") ||
+    normalized.includes("prediction") ||
+    normalized.includes("risk")
+  ) {
     return "executive_intelligence";
+  }
+
+  // Sales
+
+  if (
+    normalized.includes("sales") ||
+    normalized.includes("opportunity") ||
+    normalized.includes("opportunities") ||
+    normalized.includes("pipeline") ||
+    normalized.includes("revenue") ||
+    normalized.includes("account") ||
+    normalized.includes("accounts")
+  ) {
+    return "sales_performance";
   }
 
   return "sales_performance";
