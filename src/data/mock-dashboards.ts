@@ -21,6 +21,21 @@ const fourWidgetLayout: WidgetLayout[] = [
   { i: "insight-primary", x: 6, y: 10, w: 6, h: 4, minW: 3, minH: 3 },
 ];
 
+const executiveCombinedLayout: WidgetLayout[] = [
+  { i: "kpi-1", x: 0, y: 0, w: 3, h: 2 },
+  { i: "kpi-2", x: 3, y: 0, w: 3, h: 2 },
+  { i: "kpi-3", x: 6, y: 0, w: 3, h: 2 },
+  { i: "kpi-4", x: 9, y: 0, w: 3, h: 2 },
+
+  { i: "chart-primary", x: 0, y: 2, w: 8, h: 4 },
+
+  { i: "chart-secondary", x: 8, y: 2, w: 4, h: 4 },
+
+  { i: "insight-primary", x: 0, y: 6, w: 6, h: 4 },
+
+  { i: "insight-agentforce", x: 6, y: 6, w: 6, h: 4 }
+];
+
 export const dashboardByTemplate: Record<
   DashboardTemplateId,
   DashboardConfiguration
@@ -410,7 +425,7 @@ export const dashboardByTemplate: Record<
       "Revenue, pipeline, cases, SLA risk, and business health overview.",
     template: "executive_combined",
     theme: "executive",
-    layouts: fourWidgetLayout,
+    layouts: executiveCombinedLayout,
     metadata: {
       requestPrompt: "Show closed opportunities this quarter",
       salesforceFlow: "GenerateCombinedBusinessDashboardFlow",
@@ -424,7 +439,7 @@ export const dashboardByTemplate: Record<
         type: "kpi",
         title: "Revenue",
         data: {
-          value: "$4.8M",
+          value: "analysis.revenue.summary",
           delta: "+12.4%",
           trend: "up",
           caption: "Closed revenue",
@@ -460,7 +475,7 @@ export const dashboardByTemplate: Record<
         type: "kpi",
         title: "SLA Risk",
         data: {
-          value: "9.8%",
+          value: "Critical",
           delta: "+1.3%",
           trend: "up",
           caption: "At-risk case share",
@@ -502,35 +517,6 @@ export const dashboardByTemplate: Record<
           ],
         },
       },
-      {
-        id: "table-primary",
-        type: "table",
-        title: "Salesforce Accounts",
-        data: {
-          columns: [],
-          rows: [],
-        },
-      },
-
-      {
-        id: "table-secondary",
-        type: "table",
-        title: "Salesforce Opportunities",
-        data: {
-          columns: [],
-          rows: [],
-        },
-      },
-
-      {
-        id: "table-tertiary",
-        type: "table",
-        title: "Salesforce Cases",
-        data: {
-          columns: [],
-          rows: [],
-        },
-      },
 
       {
         id: "insight-primary",
@@ -548,6 +534,19 @@ export const dashboardByTemplate: Record<
           ],
         },
       },
+      {
+  id: "insight-agentforce",
+  type: "insight",
+  title: "Agentforce Executive Insights",
+  data: {
+    agent: "Dashboard Visualization Agent",
+    severity: "info",
+    summary: "Insights generated from Salesforce analysis.",
+    bullets: [
+      "Waiting for Agentforce analysis"
+    ]
+  }
+}
     ],
   },
 };

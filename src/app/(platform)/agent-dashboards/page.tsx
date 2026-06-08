@@ -21,7 +21,7 @@ export default async function AgentDashboardsPage() {
           <Link
             key={dashboard.Id}
             href={`/agent-dashboards/${dashboard.Id}`}
-            className="dashboard-surface p-4 rounded-xl hover:opacity-90 transition"
+            className="dashboard-surface p-4 rounded-xl hover:opacity-90 hover:scale-[1.01] hover:border-primary transition cursor-pointer"
           >
 
             <h2 className="text-xl font-semibold">

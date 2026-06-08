@@ -5,36 +5,49 @@ export interface DashboardRequestConfiguration {
 
   dashboardName: string;
 
-  sales?: {
-    opportunities?: string;
-    revenue?: string;
+  generatedAt?: string;
+
+  agentMetadata?: {
+    generatedBy: string;
+    version: string;
   };
 
-  support?: {
-    cases?: string;
-    slaRisk?: string;
+  metrics?: {
+    strategicOpportunities?: number;
+    highPriorityCases?: number;
+
+    opportunityCount?: number;
+    caseCount?: number;
+    eventCount?: number;
   };
 
-  kpis: string[];
+  analysis?: {
+    revenue?: {
+      severity: string;
+      summary: string;
+    };
 
-  charts: string[];
-}
+    sla?: {
+      severity: string;
+      summary: string;
+    };
 
-export interface DashboardRequestRecord {
-  Id: string;
-  Name: string;
+    executive?: {
+      severity: string;
+      summary: string;
+    };
+  };
 
-  Dashboard_Type__c: string;
+  events?: {
+    revenueAnalysisExecuted?: boolean;
+    slaAnalysisExecuted?: boolean;
+    executiveAnalysisExecuted?: boolean;
+  };
 
-  Template__c: string;
-
-  Status__c: string;
-
-  Dashboard_Summary__c?: string;
-
-  Configuration__c?: string;
-
-  Generated_By_Agent__c?: string;
-
-  Dashboard_URL__c?: string;
+  widgets?: {
+    id: string;
+    type: string;
+    title: string;
+    source: string;
+  }[];
 }

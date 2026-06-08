@@ -21,15 +21,20 @@ export const primaryNavigation: NavigationItem[] = [
     icon: Bot
   },
   {
-    label: "Dashboard",
+    label: "Dashboard Central",
     href: "/dashboard/dashboard-executive-combined",
     icon: LayoutDashboard
   },
-  {
+  /*{
     label: "Studio",
     href: "/studio/dashboard-executive-combined",
     icon: SlidersHorizontal
-  },
+  }, */
+  {
+  label: "Generated Dashboards",
+  href: "/agent-dashboards",
+  icon: LayoutDashboard
+},
   {
     label: "Events",
     href: "/events",

@@ -78,3 +78,4 @@ export function DashboardGrid({ dashboard, mode }: DashboardGridProps) {
     </ResponsiveGridLayout>
   );
 }
+

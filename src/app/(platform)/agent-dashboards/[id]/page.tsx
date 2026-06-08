@@ -39,6 +39,31 @@ export default async function AgentDashboardPage({
             configuration
         );
 
+    const summary =
+    dashboardRequest.Dashboard_Summary__c;
+
+    if (summary) {
+    const insightWidget =
+        dashboard.widgets.find(
+            (widget) =>
+                widget.id === "insight-primary"
+        );
+
+    if (
+        insightWidget &&
+        insightWidget.type === "insight"
+    ) {
+        insightWidget.data.summary =
+            summary;
+
+        insightWidget.data.agent =
+            dashboardRequest.Generated_By_Agent__c ??
+            "VisualLogic Agent";
+
+        insightWidget.data.bullets = [];
+    }
+}
+
     return (
         <DashboardRendererShell
             dashboard={dashboard}
