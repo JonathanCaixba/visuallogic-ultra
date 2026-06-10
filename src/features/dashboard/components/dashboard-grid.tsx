@@ -62,7 +62,7 @@ export function DashboardGrid({ dashboard, mode }: DashboardGridProps) {
       layouts={{ lg: visibleLayout }}
       breakpoints={dashboardBreakpoints}
       cols={dashboardColumns}
-      rowHeight={86}
+      rowHeight={48}
       margin={[16, 16]}
       containerPadding={[0, 0]}
       isDraggable={editable}
