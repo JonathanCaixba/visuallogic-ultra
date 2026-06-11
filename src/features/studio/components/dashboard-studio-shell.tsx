@@ -26,6 +26,11 @@ export function DashboardStudioShell({ dashboard }: { dashboard: DashboardConfig
     window.setTimeout(() => setSaveState("idle"), 1800);
   };
 
+  const viewHref =
+    dashboard.id === "dashboard-central"
+      ? "/dashboard-central"
+      : `/dashboard/${dashboard.id}`;
+
   return (
     <section data-dashboard-theme={dashboard.theme} className="min-h-full p-4 md:p-6">
       <div className="mb-5 flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
@@ -47,8 +52,8 @@ export function DashboardStudioShell({ dashboard }: { dashboard: DashboardConfig
             Restore
           </Button>
           <Button asChild variant="outline" size="sm">
-            <Link href={`/agent-dashboards/${dashboard.id}`}>
-              <Eye className="h-4 w-4" aria-hidden="true" />
+            <Link href={viewHref}>
+              <Eye className="h-4 w-4" />
               View
             </Link>
           </Button>
