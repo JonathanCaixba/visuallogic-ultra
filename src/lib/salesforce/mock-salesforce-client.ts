@@ -6,6 +6,8 @@ import { getOpportunityChartData } from "@/services/salesforce/kpi-builder";
 import { getBusinessSummary } from "@/services/salesforce/kpi-builder";
 import { getCasesByStatusChartData } from "@/services/salesforce/kpi-builder";
 import { mockAgentEvents } from "@/data/mock-events";
+// Añadir junto a los demás imports
+import { dynamicDashboardRegistry } from "@/lib/salesforce/dynamic-dashboard-registry";
 import type {
   AgentEvent,
   DashboardConfiguration,
@@ -163,6 +165,17 @@ if (template === "support_operations") {
   id: string
 ): Promise<DashboardConfiguration> {
 
+  // ── Dynamic path ──────────────────────────────────────────────────────────
+  if (id.startsWith("dynamic-")) {
+    const cached = dynamicDashboardRegistry.get(id);
+    if (cached) return structuredClone(cached);
+    throw new Error(
+      `Dynamic dashboard '${id}' was not found. ` +
+      `Visit the agent-dashboards page first so the dashboard is registered.`
+    );
+  }
+
+  // ── Static path ────────────────────────────
   const dashboard = cloneDashboard(
     requireDashboard(id)
   );

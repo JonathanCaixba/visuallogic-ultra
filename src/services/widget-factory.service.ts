@@ -1,15 +1,5 @@
 /**
  * widget-factory.service.ts
- *
- * Phase 2: Dynamic Widget Factory
- * Phase 3: Dynamic Insight Widgets
- * Phase 4: Dynamic Event Widgets
- *
- * Responsibility: transform WidgetConfigEntry declarations and implicit
- * configuration data (metrics, analysis, events) into fully-typed
- * DashboardWidget objects ready for rendering.
- *
- * No template references. No mock dashboard lookups. JSON is the source of truth.
  */
 
 import type {
@@ -465,19 +455,6 @@ export function autoGenerateEventWidget(
 // ─────────────────────────────────────────────────────────────────────────────
 // Orchestration
 // ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Build the complete widget list for a dynamic dashboard.
- *
- * Precedence:
- *   1. Explicit widgets[]          → factory processes each entry
- *   2. Auto-KPIs from metrics      → only if no explicit KPI widgets exist
- *   3. Auto-Insights from analysis → only if no explicit insight widgets exist
- *   4. Auto-Events from items      → only if no explicit event-list widget exists
- *
- * This ensures explicit declarations always win while implicit data
- * provides a sensible fallback.
- */
 export function buildAllWidgets(
   config: DashboardRequestConfiguration
 ): DashboardWidget[] {

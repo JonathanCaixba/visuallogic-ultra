@@ -1,32 +1,6 @@
 /**
  * dashboard-renderer.service.ts
- *
- * Main orchestration layer: DashboardRequestConfiguration → DashboardConfiguration.
- *
- * Two rendering paths:
- *
- *   DYNAMIC PATH (JSON as source of truth)
- *   ─────────────────────────────────────
- *   Activated when any of the following is present in the configuration:
- *     • widgets[]          — explicit widget declarations
- *     • metrics            — non-empty scalar metrics map
- *     • analysis           — analysis entries from Agentforce agents
- *     • events.items       — structured event items
- *
- *   In this path the configuration alone determines:
- *     - which widgets exist and their types
- *     - what data each widget displays
- *     - widget severity / tone
- *     - grid layout (auto-computed, no hardcoded coordinates)
- *
- *   LEGACY PATH (backward compatibility)
- *   ─────────────────────────────────────
- *   Activated when the configuration contains no dynamic content.
- *   Clones the matching template from mock-dashboards and applies
- *   metric patches, preserving existing behaviour for all four
- *   known template IDs.
  */
-
 import type {
   DashboardConfiguration,
   DashboardRequestConfiguration,
@@ -142,13 +116,6 @@ function buildDynamicDashboard(
 // ─────────────────────────────────────────────────────────────────────────────
 // Legacy render path (backward compatibility)
 // ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Clone the static template and apply the shallow metric patches that
- * the old renderer used to perform. This path is intentionally minimal —
- * it should not gain new features. New functionality belongs in the
- * dynamic path above.
- */
 function buildTemplateBasedDashboard(
   config: DashboardRequestConfiguration
 ): DashboardConfiguration {

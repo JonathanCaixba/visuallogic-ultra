@@ -1,10 +1,7 @@
 import {
-  BarChart3,
   Bot,
   CalendarClock,
-  FileDown,
   LayoutDashboard,
-  SlidersHorizontal
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -22,14 +19,9 @@ export const primaryNavigation: NavigationItem[] = [
   },
   {
     label: "Dashboard Central",
-    href: "/dashboard/dashboard-executive-combined",
+    href: "/dashboard-central",
     icon: LayoutDashboard
   },
-  /*{
-    label: "Studio",
-    href: "/studio/dashboard-executive-combined",
-    icon: SlidersHorizontal
-  }, */
   {
   label: "Generated Dashboards",
   href: "/agent-dashboards",
@@ -39,15 +31,5 @@ export const primaryNavigation: NavigationItem[] = [
     label: "Events",
     href: "/events",
     icon: CalendarClock
-  },
-  {
-    label: "Export",
-    href: "/export/dashboard-executive-combined",
-    icon: FileDown
-  },
-  {
-    label: "Presentation",
-    href: "/presentation/dashboard-executive-combined",
-    icon: BarChart3
   }
 ];

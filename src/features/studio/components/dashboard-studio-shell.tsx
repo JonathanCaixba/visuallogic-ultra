@@ -47,7 +47,7 @@ export function DashboardStudioShell({ dashboard }: { dashboard: DashboardConfig
             Restore
           </Button>
           <Button asChild variant="outline" size="sm">
-            <Link href={`/dashboard/${dashboard.id}`}>
+            <Link href={`/agent-dashboards/${dashboard.id}`}>
               <Eye className="h-4 w-4" aria-hidden="true" />
               View
             </Link>

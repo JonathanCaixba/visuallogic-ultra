@@ -4,10 +4,6 @@ import type { WidgetTone, WidgetType } from "./widget";
 // Severity
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Severity strings that Salesforce Agentforce Flows produce.
- * Mapped to WidgetTone at render time by the widget factory.
- */
 export type AnalysisSeverity =
   | "healthy"
   | "low"
@@ -21,11 +17,6 @@ export type AnalysisSeverity =
 // Metrics
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Scalar metrics produced by an Agentforce Flow.
- * Keys are camelCase; values are numbers or pre-formatted strings.
- * An index signature allows arbitrary Agentforce-generated metric names.
- */
 export interface DashboardMetricsMap {
   strategicOpportunities?: number;
   highPriorityCases?: number;
@@ -44,11 +35,6 @@ export interface DashboardMetricsMap {
 // ─────────────────────────────────────────────────────────────────────────────
 // Analysis
 // ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * A single analysis entry produced by a specialised Agentforce agent.
- * Common domains: revenue, sla, executive.
- */
 export interface AnalysisEntry {
   /** Agentforce-produced severity string, mapped to WidgetTone at render time */
   severity: AnalysisSeverity | string;
@@ -78,10 +64,6 @@ export interface DashboardEventItem {
   agent?: string;
 }
 
-/**
- * Events payload from the Agentforce Flow.
- * Supports both legacy boolean execution flags and structured event items.
- */
 export interface DashboardEventsMap {
   /** Legacy execution flags (kept for backward compatibility) */
   revenueAnalysisExecuted?: boolean;
@@ -94,19 +76,6 @@ export interface DashboardEventsMap {
 // ─────────────────────────────────────────────────────────────────────────────
 // Widget Configuration Entry
 // ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * A single widget declaration inside Configuration__c.widgets[].
- *
- * The `source` field is a dot-path pointer to data in the configuration tree:
- *   "strategicOpportunities"       → metrics.strategicOpportunities
- *   "metrics.strategicOpportunities" → metrics.strategicOpportunities
- *   "analysis.revenue"             → analysis.revenue (AnalysisEntry)
- *   "events.items"                 → events.items (DashboardEventItem[])
- *
- * Type-specific overrides (value, delta, summary, etc.) take precedence
- * over the resolved source data.
- */
 export interface WidgetConfigEntry {
   /** Unique widget identifier; used as React key and layout key */
   id: string;
@@ -153,11 +122,6 @@ export interface WidgetConfigEntry {
 // ─────────────────────────────────────────────────────────────────────────────
 // Salesforce Record
 // ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Shape of a Dashboard_Request__c record as returned by the Salesforce API.
- * Configuration__c is a serialised JSON string of DashboardRequestConfiguration.
- */
 export interface DashboardRequestRecord {
   Id: string;
   Name: string;
@@ -173,18 +137,6 @@ export interface DashboardRequestRecord {
 // ─────────────────────────────────────────────────────────────────────────────
 // Root Configuration
 // ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * The complete payload stored in Dashboard_Request__c.Configuration__c.
- *
- * This is the SINGLE SOURCE OF TRUTH for dynamic dashboard rendering.
- *
- * Rendering decision tree (evaluated in renderDashboardFromConfiguration):
- *   1. If widgets[], metrics, analysis, or events.items contain data
- *      → Dynamic render: JSON drives every widget, layout, and insight
- *   2. Otherwise
- *      → Legacy render: template clone + metric patches (backward compat)
- */
 export interface DashboardRequestConfiguration {
   /** Fallback template id used only when no dynamic content is present */
   template: string;
